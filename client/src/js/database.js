@@ -16,7 +16,7 @@ const initdb = async () =>
     const db = await initdb();
     const tx = db.transaction('jate', 'readwrite');
     const store = tx.objectStore('jate');
-    await store.add({ content });
+    await store.put({ id: 1, content: content });
     await tx.complete;
     console.log('Content added to the database');
   };
@@ -25,9 +25,12 @@ const initdb = async () =>
     const db = await initdb();
     const tx = db.transaction('jate', 'readonly');
     const store = tx.objectStore('jate');
-    const content = await store.getAll();
+    const content = await store.get(1);
+    if (!content) {
+      return;
+    }
     await tx.complete;
-    return content;
+    return content.content;
   };
   
   initdb();
